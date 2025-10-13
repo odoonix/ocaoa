@@ -3,7 +3,6 @@
 
 from unittest import mock
 
-from odoo.tests.case import TestCase
 from odoo.tests.common import BaseCase, tagged
 
 from odoo.addons.component.core import Component

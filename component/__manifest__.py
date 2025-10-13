@@ -7,7 +7,7 @@
     " as an alternative to model classes",
     "version": "19.0.1.0.0",
     "author": "Camptocamp,Odoo Community Association (OCA)",
-    "website": "https://github.com/OCA/connector",
+    "website": "https://www.moonsun.au/apps/integeration-toolbox",
     "license": "LGPL-3",
     "category": "Generic Modules",
     "depends": ["base"],
