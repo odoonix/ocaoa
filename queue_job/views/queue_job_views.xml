@@ -196,7 +196,7 @@
         </field>
     </record>
 
-    <!-- <record id="view_queue_job_search" model="ir.ui.view">
+    <record id="view_queue_job_search" model="ir.ui.view">
         <field name="name">queue.job.search</field>
         <field name="model">queue.job</field>
         <field name="arch" type="xml">
@@ -271,7 +271,7 @@
                     string="Last 30 days"
                     domain="[('date_created', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"
                 />
-                <group expand="0" string="Group By">
+                <group>
                     <filter
                         name="group_by_channel"
                         string="Channel"
@@ -320,7 +320,7 @@
                 </group>
             </search>
         </field>
-    </record> -->
+    </record>
 
     <record id="action_queue_job" model="ir.actions.act_window">
         <field name="name">Jobs</field>
@@ -332,6 +332,6 @@
                                'search_default_started': 1,
                                'search_default_failed': 1}</field>
         <field name="view_id" ref="view_queue_job_tree" />
-        <!-- <field name="search_view_id" ref="view_queue_job_search" /> -->
+        <field name="search_view_id" ref="view_queue_job_search" />
     </record>
 </odoo>

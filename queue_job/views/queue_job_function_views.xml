@@ -28,14 +28,14 @@
         </field>
     </record>
 
-    <!-- <record id="view_queue_job_function_search" model="ir.ui.view">
+    <record id="view_queue_job_function_search" model="ir.ui.view">
         <field name="name">queue.job.function.search</field>
         <field name="model">queue.job.function</field>
         <field name="arch" type="xml">
             <search string="Job Functions">
                 <field name="name" />
                 <field name="channel_id" />
-                <group expand="0" string="Group By">
+                <group>
                     <filter
                         name="group_by_channel"
                         string="Channel"
@@ -44,7 +44,7 @@
                 </group>
             </search>
         </field>
-    </record> -->
+    </record>
 
     <record id="action_queue_job_function" model="ir.actions.act_window">
         <field name="name">Job Functions</field>
