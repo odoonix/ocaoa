@@ -13,6 +13,21 @@ Components <https://dev.to/guewen/introduction-to-odoo-components-bn0>`__
 by @guewen.
 
 
+Usecase
+=======
+
+
+
+
+Installation
+============
+
+
+
+
+Configuration
+=============
+
 
 
 
@@ -98,5 +113,10 @@ History
 -----------------------
 
 -  [MIGRATION] from 11.0 branched at rev. 324e006
+
+
+Development
+===========
+
 
 

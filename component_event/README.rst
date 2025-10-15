@@ -10,6 +10,21 @@ full Connector though. It is built upon the ``component`` module.
 Documentation: http://odoo-connector.com/
 
 
+Usecase
+=======
+
+
+
+
+Installation
+============
+
+
+
+
+Configuration
+=============
+
 
 
 
@@ -78,5 +93,10 @@ Next
 -----------------------
 
 -  [MIGRATION] from 12.0 branched at rev. 324e006
+
+
+Development
+===========
+
 
 

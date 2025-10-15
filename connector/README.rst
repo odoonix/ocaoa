@@ -45,6 +45,21 @@ It is used for example used to connect
 used with Solr, CMIS, ...
 
 
+Usecase
+=======
+
+
+
+
+Installation
+============
+
+
+
+
+Configuration
+=============
+
 
 
 
@@ -105,5 +120,10 @@ Next
 -----------------------
 
 -  [MIGRATION] from 12.0 branched at rev. 324e006
+
+
+Development
+===========
+
 
 
