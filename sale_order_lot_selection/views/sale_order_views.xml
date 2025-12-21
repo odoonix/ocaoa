@@ -15,6 +15,7 @@
                     groups="stock.group_production_lot"
                     options="{'no_create': True, 'no_create_edit': True}"
                     optional="hide"
+                    readonly="state in ['sale', 'cancel','sent']"
                 />
             </xpath>
         </field>
