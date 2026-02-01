@@ -4,7 +4,6 @@
 from lxml import etree
 
 from odoo import Command
-
 from odoo.exceptions import ValidationError
 from odoo.tests import Form
 from odoo.tests.common import TransactionCase
@@ -140,20 +139,24 @@ class TestBrandMixin(TransactionCase):
             }
         )
 
-        move.update({
-            "invoice_line_ids": [
-                Command.create({
-                    "move_id": move.id,
-                    "product_id": product.id,
-                    "quantity": 40.0,
-                    "name": "product test 1",
-                    "discount": 10.00,
-                    "price_unit": 2.27,
-                    "journal_id": self.journal.id,
-                    "account_id": self.account_revenue.id,
-                })
-            ],
-        })
+        move.update(
+            {
+                "invoice_line_ids": [
+                    Command.create(
+                        {
+                            "move_id": move.id,
+                            "product_id": product.id,
+                            "quantity": 40.0,
+                            "name": "product test 1",
+                            "discount": 10.00,
+                            "price_unit": 2.27,
+                            "journal_id": self.journal.id,
+                            "account_id": self.account_revenue.id,
+                        }
+                    )
+                ],
+            }
+        )
         move.action_post()
         reverse_wizard = Form(
             self.env["account.move.reversal"].with_context(
