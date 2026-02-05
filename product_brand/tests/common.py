@@ -10,9 +10,11 @@ class CommonCase(BaseCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.product=cls.env["product.product"].create({
-            "name": "Test Product",
-        })
+        cls.product = cls.env["product.product"].create(
+            {
+                "name": "Test Product",
+            }
+        )
         cls.product_brand_obj = cls.env["product.brand"]
         cls.product_brand = cls.product_brand_obj.create(
             {

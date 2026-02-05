@@ -61,15 +61,17 @@ class TestAccountMove(TransactionCase):
                 "move_type": "out_invoice",
                 "journal_id": self.journal.id,
                 "invoice_line_ids": [
-                    Command.create({
-                        "product_id": self.product.id,
-                        "quantity": 1,
-                        "name": "something",
-                        "discount": 10.00,
-                        "price_unit": 42,
-                        "account_id": self.account_revenue.id,
-                        "journal_id": self.journal.id,
-                    })
+                    Command.create(
+                        {
+                            "product_id": self.product.id,
+                            "quantity": 1,
+                            "name": "something",
+                            "discount": 10.00,
+                            "price_unit": 42,
+                            "account_id": self.account_revenue.id,
+                            "journal_id": self.journal.id,
+                        }
+                    )
                 ],
             }
         )

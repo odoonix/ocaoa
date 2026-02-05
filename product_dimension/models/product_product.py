@@ -34,4 +34,3 @@ class ProductProduct(models.Model):
                 product.product_width,
                 product.dimensional_uom_id,
             )
-

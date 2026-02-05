@@ -9,6 +9,9 @@ import time
 from odoo.service import server
 from odoo.tools import config
 import odoo.addons
+from .runner import QueueJobRunner, _channels
+
+_logger = logging.getLogger(__name__)
 
 # try:
 #     from odoo.addons.server_environment import serv_config
@@ -19,11 +22,8 @@ import odoo.addons
 #         queue_job_config = {}
 # except ImportError:
 #     queue_job_config = config.misc.get("queue_job", {})
-queue_job_config={}
+queue_job_config = {}
 
-from .runner import QueueJobRunner, _channels
-
-_logger = logging.getLogger(__name__)
 
 START_DELAY = 5
 
