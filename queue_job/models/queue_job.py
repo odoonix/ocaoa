@@ -3,10 +3,12 @@
 
 import logging
 import random
+import time
 from datetime import datetime, timedelta
 
-from odoo import _, api, exceptions, fields, models
-from odoo.tools import config, html_escape, index_exists
+from odoo import api, exceptions, fields, models
+from odoo.tools import config, html_escape
+from odoo.tools.sql import create_index
 
 from odoo.addons.base_sparse_field.models.fields import Serialized
 
@@ -16,6 +18,7 @@ from ..fields import JobSerialized
 from ..job import (
     CANCELLED,
     DONE,
+    ENQUEUED,
     FAILED,
     PENDING,
     STARTED,
@@ -100,6 +103,7 @@ class QueueJob(models.Model):
     date_done = fields.Datetime(readonly=True)
     exec_time = fields.Float(
         string="Execution Time (avg)",
+        readonly=True,
         aggregator="avg",
         help="Time required to execute this job in seconds. Average when grouped.",
     )
@@ -127,38 +131,41 @@ class QueueJob(models.Model):
     worker_pid = fields.Integer(readonly=True)
 
     def init(self):
-        index_1 = "queue_job_identity_key_state_partial_index"
-        index_2 = "queue_job_channel_date_done_date_created_index"
-        if not index_exists(self.env.cr, index_1):
-            # Used by Job.job_record_with_same_identity_key
-            self.env.cr.execute(
-                "CREATE INDEX queue_job_identity_key_state_partial_index "
-                "ON queue_job (identity_key) WHERE state in ('pending', "
-                "'enqueued', 'wait_dependencies') AND identity_key IS NOT NULL;"
-            )
-        if not index_exists(self.env.cr, index_2):
-            # Used by <queue.job>.autovacuum
-            self.env.cr.execute(
-                "CREATE INDEX queue_job_channel_date_done_date_created_index "
-                "ON queue_job (channel, date_done, date_created);"
-            )
+        cr = self.env.cr
+        # Used by Job.job_record_with_same_identity_key
+        create_index(
+            cr,
+            "queue_job_identity_key_state_partial_index",
+            "queue_job",
+            ["identity_key"],
+            where=(
+                "state in ('pending','enqueued','wait_dependencies') "
+                "AND identity_key IS NOT NULL"
+            ),
+            comment=("Queue Job: partial index for identity_key on active states"),
+        )
+        # Used by <queue.job>.autovacuum
+        create_index(
+            cr,
+            "queue_job_channel_date_done_date_created_index",
+            "queue_job",
+            ["channel", "date_done", "date_created"],
+            comment="Queue Job: index to accelerate autovacuum",
+        )
 
     @api.depends("dependencies")
     def _compute_dependency_graph(self):
-        jobs_groups = self.env["queue.job"].read_group(
-            [
-                (
-                    "graph_uuid",
-                    "in",
-                    [uuid for uuid in self.mapped("graph_uuid") if uuid],
+        graph_uuids = [uuid for uuid in self.mapped("graph_uuid") if uuid]
+        if graph_uuids:
+            ids_per_graph_uuid = dict(
+                self.env["queue.job"]._read_group(
+                    [("graph_uuid", "in", graph_uuids)],
+                    groupby=["graph_uuid"],
+                    aggregates=["id:array_agg"],
                 )
-            ],
-            ["graph_uuid", "ids:array_agg(id)"],
-            ["graph_uuid"],
-        )
-        ids_per_graph_uuid = {
-            group["graph_uuid"]: group["ids"] for group in jobs_groups
-        }
+            )
+        else:
+            ids_per_graph_uuid = {}
         for record in self:
             if not record.graph_uuid:
                 record.dependency_graph = {}
@@ -216,20 +223,17 @@ class QueueJob(models.Model):
         }
 
     def _compute_graph_jobs_count(self):
-        jobs_groups = self.env["queue.job"].read_group(
-            [
-                (
-                    "graph_uuid",
-                    "in",
-                    [uuid for uuid in self.mapped("graph_uuid") if uuid],
+        graph_uuids = [uuid for uuid in self.mapped("graph_uuid") if uuid]
+        if graph_uuids:
+            count_per_graph_uuid = dict(
+                self.env["queue.job"]._read_group(
+                    [("graph_uuid", "in", graph_uuids)],
+                    groupby=["graph_uuid"],
+                    aggregates=["__count"],
                 )
-            ],
-            ["graph_uuid"],
-            ["graph_uuid"],
-        )
-        count_per_graph_uuid = {
-            group["graph_uuid"]: group["graph_uuid_count"] for group in jobs_groups
-        }
+            )
+        else:
+            count_per_graph_uuid = {}
         for record in self:
             record.graph_jobs_count = count_per_graph_uuid.get(record.graph_uuid) or 0
 
@@ -247,11 +251,12 @@ class QueueJob(models.Model):
                 fieldname for fieldname in vals if fieldname in self._protected_fields
             ]
             if write_on_protected_fields:
-                raise exceptions.AccessError(
-                    _("Not allowed to change field(s): {}").format(
-                        write_on_protected_fields
-                    )
+                # use env translation and lazy formatting (args to _)
+                msg = self.env._(
+                    "Not allowed to change field(s): %s",
+                    ", ".join(write_on_protected_fields),
                 )
+                raise exceptions.AccessError(msg)
 
         different_user_jobs = self.browse()
         if vals.get("user_id"):
@@ -279,7 +284,8 @@ class QueueJob(models.Model):
         job = Job.load(self.env, self.uuid)
         action = job.related_action()
         if action is None:
-            raise exceptions.UserError(_("No action available for this job"))
+            msg = self.env._("No action available for this job")
+            raise exceptions.UserError(msg)
         return action
 
     def open_graph_jobs(self):
@@ -292,7 +298,7 @@ class QueueJob(models.Model):
         )
         action.update(
             {
-                "name": _("Jobs for graph %s") % (self.graph_uuid),
+                "name": self.env._("Jobs for graph %s", self.graph_uuid),
                 "context": {},
                 "domain": [("id", "in", jobs.ids)],
             }
@@ -321,21 +327,30 @@ class QueueJob(models.Model):
                 record.env["queue.job"].flush_model()
                 job_.cancel_dependent_jobs()
             else:
-                raise ValueError(f"State not supported: {state}")
+                msg = f"State not supported: {state}"
+                raise ValueError(msg)
 
     def button_done(self):
-        result = _("Manually set to done by {}").format(self.env.user.name)
-        self._change_job_state(DONE, result=result)
+        # If job was set to STARTED or CANCELLED, do not set it to DONE
+        states_from = (WAIT_DEPENDENCIES, PENDING, ENQUEUED, FAILED)
+        result = self.env._("Manually set to done by %s", self.env.user.name)
+        records = self.filtered(lambda job_: job_.state in states_from)
+        records._change_job_state(DONE, result=result)
         return True
 
     def button_cancelled(self):
-        result = _("Cancelled by {}").format(self.env.user.name)
-        self._change_job_state(CANCELLED, result=result)
+        # If job was set to DONE or WAIT_DEPENDENCIES, do not cancel it
+        states_from = (PENDING, ENQUEUED, FAILED)
+        result = self.env._("Cancelled by %s", self.env.user.name)
+        records = self.filtered(lambda job_: job_.state in states_from)
+        records._change_job_state(CANCELLED, result=result)
         return True
 
     def requeue(self):
-        jobs_to_requeue = self.filtered(lambda job_: job_.state != WAIT_DEPENDENCIES)
-        jobs_to_requeue._change_job_state(PENDING)
+        # If job is already in queue or started, do not requeue it
+        states_from = (FAILED, DONE, CANCELLED)
+        records = self.filtered(lambda job_: job_.state in states_from)
+        records._change_job_state(PENDING)
         return True
 
     def _message_post_on_failure(self):
@@ -356,7 +371,7 @@ class QueueJob(models.Model):
         if not group:
             return None
         companies = self.mapped("company_id")
-        domain = [("group_ids", "in", [group.id])]
+        domain = [("group_ids", "=", group.id)]
         if companies:
             domain.append(("company_id", "in", companies.ids))
         return domain
@@ -370,7 +385,7 @@ class QueueJob(models.Model):
         If nothing is returned, no message will be posted.
         """
         self.ensure_one()
-        return _(
+        return self.env._(
             "Something bad happened during the execution of the job. "
             "More details in the 'Exception Information' section."
         )
@@ -388,8 +403,9 @@ class QueueJob(models.Model):
 
         Called from a cron.
         """
-        for channel in self.env["queue.job.channel"].search([]):
+        for channel in self.env["queue.job.channel"].search([]):  # pylint: disable=no-search-all
             deadline = datetime.now() - timedelta(days=int(channel.removal_interval))
+            # Delete in chunks using a stable order (matches composite index)
             while True:
                 jobs = self.search(
                     [
@@ -425,7 +441,7 @@ class QueueJob(models.Model):
         if not records:
             return None
         action = {
-            "name": _("Related Record"),
+            "name": self.env._("Related Record"),
             "type": "ir.actions.act_window",
             "view_mode": "form",
             "res_model": records._name,
@@ -435,14 +451,16 @@ class QueueJob(models.Model):
         else:
             action.update(
                 {
-                    "name": _("Related Records"),
+                    "name": self.env._("Related Records"),
                     "view_mode": "list,form",
                     "domain": [("id", "in", records.ids)],
                 }
             )
         return action
 
-    def _test_job(self, failure_rate=0):
+    def _test_job(self, failure_rate=0, job_duration=0):
         _logger.info("Running test job.")
         if random.random() <= failure_rate:
             raise JobError("Job failed")
+        if job_duration:
+            time.sleep(job_duration)
