@@ -10,8 +10,11 @@ class SetJobsToDone(models.TransientModel):
     _description = "Set all selected jobs to done"
 
     def set_done(self):
+<<<<<<< HEAD
         # Only jobs with state WAIT_DEPENDENCIES, PENDING, ENQUEUED or FAILED
         # will change to DONE
+=======
+>>>>>>> parent of 17a8035 ([UP]remove modules)
         jobs = self.job_ids
         jobs.button_done()
         return {"type": "ir.actions.act_window_close"}

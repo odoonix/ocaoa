@@ -4,11 +4,19 @@ import doctest
 import logging
 import typing
 from contextlib import contextmanager
+<<<<<<< HEAD
+=======
+from itertools import groupby
+>>>>>>> parent of 17a8035 ([UP]remove modules)
 from operator import attrgetter
 from unittest import TestCase, mock
 
 from odoo.tests.case import TestCase as _TestCase
+<<<<<<< HEAD
 from odoo.tools import groupby
+=======
+from odoo.tests.common import BaseCase
+>>>>>>> parent of 17a8035 ([UP]remove modules)
 
 from odoo.addons.queue_job.delay import Graph
 
@@ -210,6 +218,7 @@ class JobsTrap:
             )
 
         if expected_call not in actual_calls:
+<<<<<<< HEAD
             actual_lines = "\n".join(
                 f" * {self._format_job_call(call)}" for call in actual_calls
             )
@@ -218,6 +227,16 @@ class JobsTrap:
                 f"Actual enqueued jobs:\n{actual_lines}"
             )
             raise AssertionError(msg)
+=======
+            raise AssertionError(
+                "Job {} was not enqueued.\n" "Actual enqueued jobs:\n{}".format(
+                    self._format_job_call(expected_call),
+                    "\n".join(
+                        f" * {self._format_job_call(call)}" for call in actual_calls
+                    ),
+                )
+            )
+>>>>>>> parent of 17a8035 ([UP]remove modules)
 
     def perform_enqueued_jobs(self):
         """Perform the enqueued jobs synchronously"""
@@ -297,6 +316,7 @@ class JobsTrap:
         return enqueued_jobs
 
     def _format_job_call(self, call):
+<<<<<<< HEAD
         # Build method argument string (positional and keyword) separately
         method_args_parts = []
         if call.args:
@@ -316,6 +336,20 @@ class JobsTrap:
             f"<{call.method.__self__}>."
             f"{call.method.__name__}({method_args}) "
             f"with properties ({props_str})"
+=======
+        method_all_args = []
+        if call.args:
+            method_all_args.append(", ".join(f"{arg}" for arg in call.args))
+        if call.kwargs:
+            method_all_args.append(
+                ", ".join(f"{key}={value}" for key, value in call.kwargs.items())
+            )
+        return "<{}>.{}({}) with properties ({})".format(
+            call.method.__self__,
+            call.method.__name__,
+            ", ".join(method_all_args),
+            ", ".join(f"{key}={value}" for key, value in call.properties.items()),
+>>>>>>> parent of 17a8035 ([UP]remove modules)
         )
 
     def __repr__(self):
@@ -341,7 +375,11 @@ class JobCounter:
         return self.search_all() - self.existing
 
     def search_all(self):
+<<<<<<< HEAD
         return self.env["queue.job"].search([])  # pylint: disable=no-search-all
+=======
+        return self.env["queue.job"].search([])
+>>>>>>> parent of 17a8035 ([UP]remove modules)
 
 
 class JobMixin:
@@ -359,7 +397,11 @@ class JobMixin:
 
 
 @contextmanager
+<<<<<<< HEAD
 def mock_with_delay():  # pylint: disable=line-too-long
+=======
+def mock_with_delay():  # pylint: disable=E501
+>>>>>>> parent of 17a8035 ([UP]remove modules)
     """Context Manager mocking ``with_delay()``
 
     DEPRECATED: use ``trap_jobs()'``.
@@ -420,7 +462,11 @@ def mock_with_delay():  # pylint: disable=line-too-long
         yield delayable_cls, delayable
 
 
+<<<<<<< HEAD
 class OdooDocTestCase(doctest.DocTestCase, _TestCase):
+=======
+class OdooDocTestCase(doctest.DocTestCase, _TestCase, BaseCase):
+>>>>>>> parent of 17a8035 ([UP]remove modules)
     """
     We need a custom DocTestCase class in order to:
     - define test_tags to run as part of standard tests

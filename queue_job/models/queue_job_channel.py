@@ -2,7 +2,11 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html)
 
 
+<<<<<<< HEAD
 from odoo import api, exceptions, fields, models
+=======
+from odoo import _, api, exceptions, fields, models
+>>>>>>> parent of 17a8035 ([UP]remove modules)
 
 
 class QueueJobChannel(models.Model):
@@ -26,10 +30,16 @@ class QueueJobChannel(models.Model):
         default=lambda self: self.env["queue.job"]._removal_interval, required=True
     )
 
+<<<<<<< HEAD
     _name_uniq = models.Constraint(
         "UNIQUE(complete_name)",
         "Channel complete name must be unique",
     )
+=======
+    _sql_constraints = [
+        ("name_uniq", "unique(complete_name)", "Channel complete name must be unique")
+    ]
+>>>>>>> parent of 17a8035 ([UP]remove modules)
 
     @api.depends("name", "parent_id.complete_name")
     def _compute_complete_name(self):
@@ -46,8 +56,12 @@ class QueueJobChannel(models.Model):
     def parent_required(self):
         for record in self:
             if record.name != "root" and not record.parent_id:
+<<<<<<< HEAD
                 msg = self.env._("Parent channel required.")
                 raise exceptions.ValidationError(msg)
+=======
+                raise exceptions.ValidationError(_("Parent channel required."))
+>>>>>>> parent of 17a8035 ([UP]remove modules)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -81,6 +95,7 @@ class QueueJobChannel(models.Model):
                 and channel.name == "root"
                 and ("name" in values or "parent_id" in values)
             ):
+<<<<<<< HEAD
                 msg = self.env._("Cannot change the root channel")
                 raise exceptions.UserError(msg)
         return super().write(values)
@@ -91,3 +106,13 @@ class QueueJobChannel(models.Model):
             if channel.name == "root":
                 msg = self.env._("Cannot remove the root channel")
                 raise exceptions.UserError(msg)
+=======
+                raise exceptions.UserError(_("Cannot change the root channel"))
+        return super().write(values)
+
+    def unlink(self):
+        for channel in self:
+            if channel.name == "root":
+                raise exceptions.UserError(_("Cannot remove the root channel"))
+        return super().unlink()
+>>>>>>> parent of 17a8035 ([UP]remove modules)

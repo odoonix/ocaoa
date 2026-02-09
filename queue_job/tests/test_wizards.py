@@ -46,6 +46,7 @@ class TestWizards(common.TransactionCase):
         wizard = self._wizard("queue.jobs.to.done")
         wizard.set_done()
         self.assertEqual(self.job.state, "done")
+<<<<<<< HEAD
 
     def test_04_requeue_forbidden(self):
         wizard = self._wizard("queue.requeue.job")
@@ -103,3 +104,5 @@ class TestWizards(common.TransactionCase):
             self.job.state = test_state
             wizard.set_done()
             self.assertEqual(self.job.state, "done")
+=======
+>>>>>>> parent of 17a8035 ([UP]remove modules)

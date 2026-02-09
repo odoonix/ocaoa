@@ -6,7 +6,11 @@ import logging
 import re
 from collections import namedtuple
 
+<<<<<<< HEAD
 from odoo import api, exceptions, fields, models, tools
+=======
+from odoo import _, api, exceptions, fields, models, tools
+>>>>>>> parent of 17a8035 ([UP]remove modules)
 
 from ..fields import JobSerialized
 
@@ -91,16 +95,24 @@ class QueueJobFunction(models.Model):
     def _inverse_name(self):
         groups = regex_job_function_name.match(self.name)
         if not groups:
+<<<<<<< HEAD
             msg = self.env._("Invalid job function: %s", self.name)
             raise exceptions.UserError(msg)
+=======
+            raise exceptions.UserError(_("Invalid job function: {}").format(self.name))
+>>>>>>> parent of 17a8035 ([UP]remove modules)
         model_name = groups[1]
         method = groups[2]
         model = (
             self.env["ir.model"].sudo().search([("model", "=", model_name)], limit=1)
         )
         if not model:
+<<<<<<< HEAD
             msg = self.env._("Model %s not found", model_name)
             raise exceptions.UserError(msg)
+=======
+            raise exceptions.UserError(_("Model {} not found").format(model_name))
+>>>>>>> parent of 17a8035 ([UP]remove modules)
         self.model_id = model.id
         self.method = method
 
@@ -189,6 +201,7 @@ class QueueJobFunction(models.Model):
         )
 
     def _retry_pattern_format_error_message(self):
+<<<<<<< HEAD
         return self.env._(
             "Unexpected format of Retry Pattern for %s.\n"
             "Example of valid formats:\n"
@@ -196,6 +209,14 @@ class QueueJobFunction(models.Model):
             "{{1: (1, 10), 5: (11, 20), 10: (21, 30), 15: (100, 300)}}",
             self.name,
         )
+=======
+        return _(
+            "Unexpected format of Retry Pattern for {}.\n"
+            "Example of valid formats:\n"
+            "{{1: 300, 5: 600, 10: 1200, 15: 3000}}\n"
+            "{{1: (1, 10), 5: (11, 20), 10: (21, 30), 15: (100, 300)}}"
+        ).format(self.name)
+>>>>>>> parent of 17a8035 ([UP]remove modules)
 
     @api.constrains("retry_pattern")
     def _check_retry_pattern(self):
@@ -214,7 +235,11 @@ class QueueJobFunction(models.Model):
                     ) from ex
 
     def _retry_value_type_check(self, value):
+<<<<<<< HEAD
         if isinstance(value, tuple | list):
+=======
+        if isinstance(value, (tuple | list)):
+>>>>>>> parent of 17a8035 ([UP]remove modules)
             if len(value) != 2:
                 raise ValueError
             [self._retry_value_type_check(element) for element in value]
@@ -222,6 +247,7 @@ class QueueJobFunction(models.Model):
         int(value)
 
     def _related_action_format_error_message(self):
+<<<<<<< HEAD
         return self.env._(
             "Unexpected format of Related Action for %s.\n"
             "Example of valid format:\n"
@@ -229,6 +255,14 @@ class QueueJobFunction(models.Model):
             ' "kwargs" {{"limit": 10}}}}',
             self.name,
         )
+=======
+        return _(
+            "Unexpected format of Related Action for {}.\n"
+            "Example of valid format:\n"
+            '{{"enable": True, "func_name": "related_action_foo",'
+            ' "kwargs" {{"limit": 10}}}}'
+        ).format(self.name)
+>>>>>>> parent of 17a8035 ([UP]remove modules)
 
     @api.constrains("related_action")
     def _check_related_action(self):
