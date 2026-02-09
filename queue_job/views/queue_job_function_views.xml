@@ -35,22 +35,12 @@
             <search string="Job Functions">
                 <field name="name" />
                 <field name="channel_id" />
-<<<<<<< HEAD
                 <separator />
                 <filter
                     name="group_by_channel"
                     string="Channel"
                     context="{'group_by': 'channel_id'}"
                 />
-=======
-                <group>
-                    <filter
-                        name="group_by_channel"
-                        string="Channel"
-                        context="{'group_by': 'channel_id'}"
-                    />
-                </group>
->>>>>>> parent of 17a8035 ([UP]remove modules)
             </search>
         </field>
     </record>

@@ -193,7 +193,6 @@ class Base(models.AbstractModel):
                 }
 
             def _register_hook(self):
-<<<<<<< HEAD
                 # patch the method at registry time
                 patched = self._patch_job_auto_delay(
                     "foo", context_key="auto_delay_foo"
@@ -205,11 +204,6 @@ class Base(models.AbstractModel):
                         patched,
                         getattr(type(self), "foo"),
                     ),
-=======
-                self._patch_method(
-                    "foo",
-                    self._patch_job_auto_delay("foo", context_key="auto_delay_foo")
->>>>>>> parent of 17a8035 ([UP]remove modules)
                 )
                 return super()._register_hook()
 
@@ -238,14 +232,9 @@ class Base(models.AbstractModel):
                 delayed = self.with_delay(**job_options)
                 return getattr(delayed, method_name)(*args, **kwargs)
 
-<<<<<<< HEAD
         origin_func = getattr(type(self), method_name)
         auto_delay_wrapper.origin = origin_func
         return functools.update_wrapper(auto_delay_wrapper, origin_func)
-=======
-        origin = getattr(self, method_name)
-        return functools.update_wrapper(auto_delay_wrapper, origin)
->>>>>>> parent of 17a8035 ([UP]remove modules)
 
     @api.model
     def _job_store_values(self, job):
@@ -279,15 +268,3 @@ class Base(models.AbstractModel):
             for key, value in self.env.context.items()
             if key in self._job_prepare_context_before_enqueue_keys()
         }
-<<<<<<< HEAD
-=======
-
-    @classmethod
-    def _patch_method(cls, name, method):
-        origin = getattr(cls, name)
-        method.origin = origin
-        # propagate decorators from origin to method, and apply api decorator
-        wrapped = api.propagate(origin, method)
-        wrapped.origin = origin
-        setattr(cls, name, wrapped)
->>>>>>> parent of 17a8035 ([UP]remove modules)

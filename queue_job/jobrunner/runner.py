@@ -357,7 +357,6 @@ class Database:
                         ELSE exc_info
                     END)
             WHERE
-<<<<<<< HEAD
                 state IN ('enqueued','started')
                 AND date_enqueued < (now() AT TIME ZONE 'utc' - INTERVAL '10 sec')
                 AND (
@@ -378,25 +377,6 @@ class Database:
                         WHERE
                             queue_job_lock.queue_job_id = queue_job.id
                     )
-=======
-                id in (
-                    SELECT
-                        queue_job_id
-                    FROM
-                        queue_job_lock
-                    WHERE
-                        queue_job_id in (
-                            SELECT
-                                id
-                            FROM
-                                queue_job
-                            WHERE
-                                state IN ('enqueued','started')
-                                AND date_enqueued <
-                                (now() AT TIME ZONE 'utc' - INTERVAL '10 sec')
-                        )
-                    FOR UPDATE SKIP LOCKED
->>>>>>> parent of 17a8035 ([UP]remove modules)
                 )
             RETURNING uuid
             """
@@ -419,15 +399,12 @@ class Database:
         However, when the Odoo server crashes or is otherwise force-stopped,
         running jobs are interrupted while the runner has no chance to know
         they have been aborted.
-<<<<<<< HEAD
 
         This also handles orphaned jobs (enqueued but never started, no lock).
         This edge case occurs when the runner marks a job as 'enqueued'
         but the HTTP request to start the job never reaches the Odoo server
         (e.g., due to server shutdown/crash between setting enqueued and
         the controller receiving the request).
-=======
->>>>>>> parent of 17a8035 ([UP]remove modules)
         """
 
         with closing(self.conn.cursor()) as cr:
@@ -504,18 +481,10 @@ class QueueJobRunner:
         return runner
 
     def get_db_names(self):
-<<<<<<< HEAD
         db_names = config["db_name"]
         if db_names:
             return db_names
         return odoo.service.db.list_dbs(True)
-=======
-        if config["db_name"]:
-            db_names = config["db_name"].split(",")
-        else:
-            db_names = odoo.service.db.list_dbs(True)
-        return db_names
->>>>>>> parent of 17a8035 ([UP]remove modules)
 
     def close_databases(self, remove_jobs=True):
         for db_name, db in self.db_by_name.items():

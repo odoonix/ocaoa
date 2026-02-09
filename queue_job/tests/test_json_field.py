@@ -6,10 +6,7 @@ from datetime import date, datetime
 
 from lxml import etree
 
-<<<<<<< HEAD
 from odoo import Command
-=======
->>>>>>> parent of 17a8035 ([UP]remove modules)
 from odoo.tests import common
 
 # pylint: disable=odoo-addons-relative-import
@@ -18,7 +15,6 @@ from odoo.addons.queue_job.fields import JobDecoder, JobEncoder
 
 
 class TestJson(common.TransactionCase):
-<<<<<<< HEAD
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -37,10 +33,6 @@ class TestJson(common.TransactionCase):
 
     def test_encoder_recordset(self):
         demo_user = self.demo_user
-=======
-    def test_encoder_recordset(self):
-        demo_user = self.env.ref("base.user_demo")
->>>>>>> parent of 17a8035 ([UP]remove modules)
         context = demo_user.context_get()
         partner = self.env(user=demo_user, context=context).ref("base.main_partner")
         value = partner
@@ -58,11 +50,7 @@ class TestJson(common.TransactionCase):
         self.assertEqual(json.loads(value_json), expected)
 
     def test_encoder_recordset_list(self):
-<<<<<<< HEAD
         demo_user = self.demo_user
-=======
-        demo_user = self.env.ref("base.user_demo")
->>>>>>> parent of 17a8035 ([UP]remove modules)
         context = demo_user.context_get()
         partner = self.env(user=demo_user, context=context).ref("base.main_partner")
         value = ["a", 1, partner]
@@ -84,11 +72,7 @@ class TestJson(common.TransactionCase):
         self.assertEqual(json.loads(value_json), expected)
 
     def test_decoder_recordset(self):
-<<<<<<< HEAD
         demo_user = self.demo_user
-=======
-        demo_user = self.env.ref("base.user_demo")
->>>>>>> parent of 17a8035 ([UP]remove modules)
         context = demo_user.context_get()
         partner = self.env(user=demo_user).ref("base.main_partner")
 
@@ -109,11 +93,7 @@ class TestJson(common.TransactionCase):
         self.assertEqual(demo_user, expected.env.user)
 
     def test_decoder_recordset_list(self):
-<<<<<<< HEAD
         demo_user = self.demo_user
-=======
-        demo_user = self.env.ref("base.user_demo")
->>>>>>> parent of 17a8035 ([UP]remove modules)
         context = demo_user.context_get()
         partner = self.env(user=demo_user).ref("base.main_partner")
         value_json = json.dumps(
@@ -137,11 +117,7 @@ class TestJson(common.TransactionCase):
 
     def test_decoder_recordset_list_without_user(self):
         value_json = (
-<<<<<<< HEAD
             '["a", 1, {"_type": "odoo_recordset", "model": "res.users", "ids": [1]}]'
-=======
-            '["a", 1, {"_type": "odoo_recordset",' '"model": "res.users", "ids": [1]}]'
->>>>>>> parent of 17a8035 ([UP]remove modules)
         )
         expected = ["a", 1, self.env.ref("base.user_root")]
         value = json.loads(value_json, cls=JobDecoder, env=self.env)
@@ -173,11 +149,7 @@ class TestJson(common.TransactionCase):
         self.assertEqual(json.loads(value_json), expected)
 
     def test_decoder_date(self):
-<<<<<<< HEAD
         value_json = '["a", 1, {"_type": "date_isoformat", "value": "2017-04-19"}]'
-=======
-        value_json = '["a", 1, {"_type": "date_isoformat",' '"value": "2017-04-19"}]'
->>>>>>> parent of 17a8035 ([UP]remove modules)
         expected = ["a", 1, date(2017, 4, 19)]
         value = json.loads(value_json, cls=JobDecoder, env=self.env)
         self.assertEqual(value, expected)

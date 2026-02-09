@@ -3,19 +3,12 @@
 
 import logging
 import random
-<<<<<<< HEAD
 import time
 from datetime import datetime, timedelta
 
 from odoo import api, exceptions, fields, models
 from odoo.tools import config, html_escape
 from odoo.tools.sql import create_index
-=======
-from datetime import datetime, timedelta
-
-from odoo import _, api, exceptions, fields, models
-from odoo.tools import config, html_escape, index_exists
->>>>>>> parent of 17a8035 ([UP]remove modules)
 
 from odoo.addons.base_sparse_field.models.fields import Serialized
 
@@ -25,10 +18,7 @@ from ..fields import JobSerialized
 from ..job import (
     CANCELLED,
     DONE,
-<<<<<<< HEAD
     ENQUEUED,
-=======
->>>>>>> parent of 17a8035 ([UP]remove modules)
     FAILED,
     PENDING,
     STARTED,
@@ -113,10 +103,7 @@ class QueueJob(models.Model):
     date_done = fields.Datetime(readonly=True)
     exec_time = fields.Float(
         string="Execution Time (avg)",
-<<<<<<< HEAD
         readonly=True,
-=======
->>>>>>> parent of 17a8035 ([UP]remove modules)
         aggregator="avg",
         help="Time required to execute this job in seconds. Average when grouped.",
     )
@@ -144,7 +131,6 @@ class QueueJob(models.Model):
     worker_pid = fields.Integer(readonly=True)
 
     def init(self):
-<<<<<<< HEAD
         cr = self.env.cr
         # Used by Job.job_record_with_same_identity_key
         create_index(
@@ -180,40 +166,6 @@ class QueueJob(models.Model):
             )
         else:
             ids_per_graph_uuid = {}
-=======
-        index_1 = "queue_job_identity_key_state_partial_index"
-        index_2 = "queue_job_channel_date_done_date_created_index"
-        if not index_exists(self.env.cr, index_1):
-            # Used by Job.job_record_with_same_identity_key
-            self.env.cr.execute(
-                "CREATE INDEX queue_job_identity_key_state_partial_index "
-                "ON queue_job (identity_key) WHERE state in ('pending', "
-                "'enqueued', 'wait_dependencies') AND identity_key IS NOT NULL;"
-            )
-        if not index_exists(self.env.cr, index_2):
-            # Used by <queue.job>.autovacuum
-            self.env.cr.execute(
-                "CREATE INDEX queue_job_channel_date_done_date_created_index "
-                "ON queue_job (channel, date_done, date_created);"
-            )
-
-    @api.depends("dependencies")
-    def _compute_dependency_graph(self):
-        jobs_groups = self.env["queue.job"].read_group(
-            [
-                (
-                    "graph_uuid",
-                    "in",
-                    [uuid for uuid in self.mapped("graph_uuid") if uuid],
-                )
-            ],
-            ["graph_uuid", "ids:array_agg(id)"],
-            ["graph_uuid"],
-        )
-        ids_per_graph_uuid = {
-            group["graph_uuid"]: group["ids"] for group in jobs_groups
-        }
->>>>>>> parent of 17a8035 ([UP]remove modules)
         for record in self:
             if not record.graph_uuid:
                 record.dependency_graph = {}
@@ -271,7 +223,6 @@ class QueueJob(models.Model):
         }
 
     def _compute_graph_jobs_count(self):
-<<<<<<< HEAD
         graph_uuids = [uuid for uuid in self.mapped("graph_uuid") if uuid]
         if graph_uuids:
             count_per_graph_uuid = dict(
@@ -283,22 +234,6 @@ class QueueJob(models.Model):
             )
         else:
             count_per_graph_uuid = {}
-=======
-        jobs_groups = self.env["queue.job"].read_group(
-            [
-                (
-                    "graph_uuid",
-                    "in",
-                    [uuid for uuid in self.mapped("graph_uuid") if uuid],
-                )
-            ],
-            ["graph_uuid"],
-            ["graph_uuid"],
-        )
-        count_per_graph_uuid = {
-            group["graph_uuid"]: group["graph_uuid_count"] for group in jobs_groups
-        }
->>>>>>> parent of 17a8035 ([UP]remove modules)
         for record in self:
             record.graph_jobs_count = count_per_graph_uuid.get(record.graph_uuid) or 0
 
@@ -316,20 +251,12 @@ class QueueJob(models.Model):
                 fieldname for fieldname in vals if fieldname in self._protected_fields
             ]
             if write_on_protected_fields:
-<<<<<<< HEAD
                 # use env translation and lazy formatting (args to _)
                 msg = self.env._(
                     "Not allowed to change field(s): %s",
                     ", ".join(write_on_protected_fields),
                 )
                 raise exceptions.AccessError(msg)
-=======
-                raise exceptions.AccessError(
-                    _("Not allowed to change field(s): {}").format(
-                        write_on_protected_fields
-                    )
-                )
->>>>>>> parent of 17a8035 ([UP]remove modules)
 
         different_user_jobs = self.browse()
         if vals.get("user_id"):
@@ -357,12 +284,8 @@ class QueueJob(models.Model):
         job = Job.load(self.env, self.uuid)
         action = job.related_action()
         if action is None:
-<<<<<<< HEAD
             msg = self.env._("No action available for this job")
             raise exceptions.UserError(msg)
-=======
-            raise exceptions.UserError(_("No action available for this job"))
->>>>>>> parent of 17a8035 ([UP]remove modules)
         return action
 
     def open_graph_jobs(self):
@@ -375,11 +298,7 @@ class QueueJob(models.Model):
         )
         action.update(
             {
-<<<<<<< HEAD
                 "name": self.env._("Jobs for graph %s", self.graph_uuid),
-=======
-                "name": _("Jobs for graph %s") % (self.graph_uuid),
->>>>>>> parent of 17a8035 ([UP]remove modules)
                 "context": {},
                 "domain": [("id", "in", jobs.ids)],
             }
@@ -408,7 +327,6 @@ class QueueJob(models.Model):
                 record.env["queue.job"].flush_model()
                 job_.cancel_dependent_jobs()
             else:
-<<<<<<< HEAD
                 msg = f"State not supported: {state}"
                 raise ValueError(msg)
 
@@ -433,23 +351,6 @@ class QueueJob(models.Model):
         states_from = (FAILED, DONE, CANCELLED)
         records = self.filtered(lambda job_: job_.state in states_from)
         records._change_job_state(PENDING)
-=======
-                raise ValueError(f"State not supported: {state}")
-
-    def button_done(self):
-        result = _("Manually set to done by {}").format(self.env.user.name)
-        self._change_job_state(DONE, result=result)
-        return True
-
-    def button_cancelled(self):
-        result = _("Cancelled by {}").format(self.env.user.name)
-        self._change_job_state(CANCELLED, result=result)
-        return True
-
-    def requeue(self):
-        jobs_to_requeue = self.filtered(lambda job_: job_.state != WAIT_DEPENDENCIES)
-        jobs_to_requeue._change_job_state(PENDING)
->>>>>>> parent of 17a8035 ([UP]remove modules)
         return True
 
     def _message_post_on_failure(self):
@@ -470,11 +371,7 @@ class QueueJob(models.Model):
         if not group:
             return None
         companies = self.mapped("company_id")
-<<<<<<< HEAD
         domain = [("group_ids", "=", group.id)]
-=======
-        domain = [("group_ids", "in", [group.id])]
->>>>>>> parent of 17a8035 ([UP]remove modules)
         if companies:
             domain.append(("company_id", "in", companies.ids))
         return domain
@@ -488,11 +385,7 @@ class QueueJob(models.Model):
         If nothing is returned, no message will be posted.
         """
         self.ensure_one()
-<<<<<<< HEAD
         return self.env._(
-=======
-        return _(
->>>>>>> parent of 17a8035 ([UP]remove modules)
             "Something bad happened during the execution of the job. "
             "More details in the 'Exception Information' section."
         )
@@ -510,14 +403,9 @@ class QueueJob(models.Model):
 
         Called from a cron.
         """
-<<<<<<< HEAD
         for channel in self.env["queue.job.channel"].search([]):  # pylint: disable=no-search-all
             deadline = datetime.now() - timedelta(days=int(channel.removal_interval))
             # Delete in chunks using a stable order (matches composite index)
-=======
-        for channel in self.env["queue.job.channel"].search([]):
-            deadline = datetime.now() - timedelta(days=int(channel.removal_interval))
->>>>>>> parent of 17a8035 ([UP]remove modules)
             while True:
                 jobs = self.search(
                     [
@@ -553,11 +441,7 @@ class QueueJob(models.Model):
         if not records:
             return None
         action = {
-<<<<<<< HEAD
             "name": self.env._("Related Record"),
-=======
-            "name": _("Related Record"),
->>>>>>> parent of 17a8035 ([UP]remove modules)
             "type": "ir.actions.act_window",
             "view_mode": "form",
             "res_model": records._name,
@@ -567,27 +451,16 @@ class QueueJob(models.Model):
         else:
             action.update(
                 {
-<<<<<<< HEAD
                     "name": self.env._("Related Records"),
-=======
-                    "name": _("Related Records"),
->>>>>>> parent of 17a8035 ([UP]remove modules)
                     "view_mode": "list,form",
                     "domain": [("id", "in", records.ids)],
                 }
             )
         return action
 
-<<<<<<< HEAD
     def _test_job(self, failure_rate=0, job_duration=0):
         _logger.info("Running test job.")
         if random.random() <= failure_rate:
             raise JobError("Job failed")
         if job_duration:
             time.sleep(job_duration)
-=======
-    def _test_job(self, failure_rate=0):
-        _logger.info("Running test job.")
-        if random.random() <= failure_rate:
-            raise JobError("Job failed")
->>>>>>> parent of 17a8035 ([UP]remove modules)
