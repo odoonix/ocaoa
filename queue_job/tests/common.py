@@ -414,7 +414,7 @@ def mock_with_delay():  # pylint: disable=E501
         yield delayable_cls, delayable
 
 
-class OdooDocTestCase(doctest.DocTestCase, _TestCase, BaseCase):
+class OdooDocTestCase(doctest.DocTestCase):
     """
     We need a custom DocTestCase class in order to:
     - define test_tags to run as part of standard tests
@@ -432,6 +432,7 @@ class OdooDocTestCase(doctest.DocTestCase, _TestCase, BaseCase):
             checker=checker,
         )
         self.test_sequence = seq
+        self.test_tags = {"standard", "at_install", "queue_job", "doctest"}
 
     def setUp(self):
         """Log an extra statement which test is started."""
@@ -454,7 +455,6 @@ def load_doctests(module):
 
         for idx, test in enumerate(doctest.DocTestSuite(module)):
             odoo_test = OdooDocTestCase(test, seq=idx)
-            odoo_test.test_tags = {"standard", "at_install", "queue_job", "doctest"}
             tests.addTest(odoo_test)
 
         return tests
