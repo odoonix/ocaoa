@@ -357,23 +357,26 @@ class Database:
                         ELSE exc_info
                     END)
             WHERE
-                id in (
-                    SELECT
-                        queue_job_id
-                    FROM
-                        queue_job_lock
-                    WHERE
-                        queue_job_id in (
-                            SELECT
-                                id
-                            FROM
-                                queue_job
-                            WHERE
-                                state IN ('enqueued','started')
-                                AND date_enqueued <
-                                (now() AT TIME ZONE 'utc' - INTERVAL '10 sec')
-                        )
-                    FOR UPDATE SKIP LOCKED
+                state IN ('enqueued','started')
+                AND date_enqueued < (now() AT TIME ZONE 'utc' - INTERVAL '10 sec')
+                AND (
+                    id in (
+                        SELECT
+                            queue_job_id
+                        FROM
+                            queue_job_lock
+                        WHERE
+                            queue_job_lock.queue_job_id = queue_job.id
+                        FOR NO KEY UPDATE SKIP LOCKED
+                    )
+                    OR NOT EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            queue_job_lock
+                        WHERE
+                            queue_job_lock.queue_job_id = queue_job.id
+                    )
                 )
             RETURNING uuid
             """
@@ -396,6 +399,12 @@ class Database:
         However, when the Odoo server crashes or is otherwise force-stopped,
         running jobs are interrupted while the runner has no chance to know
         they have been aborted.
+
+        This also handles orphaned jobs (enqueued but never started, no lock).
+        This edge case occurs when the runner marks a job as 'enqueued'
+        but the HTTP request to start the job never reaches the Odoo server
+        (e.g., due to server shutdown/crash between setting enqueued and
+        the controller receiving the request).
         """
 
         with closing(self.conn.cursor()) as cr:
@@ -472,11 +481,10 @@ class QueueJobRunner:
         return runner
 
     def get_db_names(self):
-        if config["db_name"]:
-            db_names = config["db_name"].split(",")
-        else:
-            db_names = odoo.service.db.list_dbs(True)
-        return db_names
+        db_names = config["db_name"]
+        if db_names:
+            return db_names
+        return odoo.service.db.list_dbs(True)
 
     def close_databases(self, remove_jobs=True):
         for db_name, db in self.db_by_name.items():

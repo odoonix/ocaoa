@@ -5,23 +5,32 @@
 import logging
 from threading import Thread
 import time
+from configparser import ConfigParser
 
 from odoo.service import server
 from odoo.tools import config
-import odoo.addons
 
-# try:
-#     from odoo.addons.server_environment import serv_config
+try:
+    # Preferred source when available: structured [queue_job] section provided
+    # by OCA's server_environment addon.
+    from odoo.addons.server_environment import serv_config
 
-#     if serv_config.has_section("queue_job"):
-#         queue_job_config = serv_config["queue_job"]
-#     else:
-#         queue_job_config = {}
-# except ImportError:
-#     queue_job_config = config.misc.get("queue_job", {})
-queue_job_config={}
+    if serv_config.has_section("queue_job"):
+        queue_job_config = serv_config["queue_job"]
+    else:
+        queue_job_config = {}
+except ImportError:
+    # No server_environment: try to read a [queue_job] section from odoo.conf
+    queue_job_config = {}
+    cfg_path = config.get("config")
+    if cfg_path:
+        cp = ConfigParser(interpolation=None)
+        cp.read(cfg_path)
+        if cp.has_section("queue_job"):
+            queue_job_config = dict(cp["queue_job"])
 
-from .runner import QueueJobRunner, _channels
+
+from .runner import QueueJobRunner, _channels  # noqa: E402
 
 _logger = logging.getLogger(__name__)
 
