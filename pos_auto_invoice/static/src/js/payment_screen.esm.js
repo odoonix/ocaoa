@@ -6,8 +6,8 @@ patch(PaymentScreen.prototype, {
         super.onMounted();
         const invoice_by_default = this.pos.config.invoice_by_default;
         if (invoice_by_default) {
-            const order = this.pos.get_order();
-            order.set_to_invoice(invoice_by_default);
+            const order = this.pos.getOrder();
+            order.setToInvoice(invoice_by_default);
         }
     },
 });
