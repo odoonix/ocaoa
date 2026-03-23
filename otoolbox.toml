@@ -1,0 +1,10 @@
+[defaults]
+repository = "ocaoa"
+organization = "odoonix"
+title = "ocaoa"
+summary = "ocaoa"
+home  = "https://github.com/odoonix/ocaoa"
+version = "17.0"
+tags = ["16.0", "17.0", "18.0"]
+compatilbe = ["community", "enterprice"]
+license = "GPL"
