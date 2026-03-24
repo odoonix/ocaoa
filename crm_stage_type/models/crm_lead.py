@@ -38,9 +38,17 @@ class Lead(models.Model):
             search_domain += [('lead_type', 'in', [ctx_type, 'both'])]
 
         if team_id:
-            search_domain += ['|', ('team_ids', '=', False), ('team_ids', 'in', [team_id])]
+            search_domain += [
+                '|', 
+                    ('team_ids', '=', False), 
+                    ('team_ids', 'in', [team_id])
+            ]
         else:
-            search_domain += ['|', ('team_ids', '=', False), ('team_ids', '!=', False)]
+            search_domain += [
+                '|',
+                    ('team_ids', '=', False), 
+                    ('team_ids', '!=', False)
+            ]
 
         stage_ids = self.env['crm.stage'].sudo()._search(
             search_domain,
