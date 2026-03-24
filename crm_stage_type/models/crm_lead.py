@@ -7,10 +7,22 @@ from odoo import api, fields, models
 class Lead(models.Model):
     _inherit = "crm.lead"
 
-    # stage_id = fields.Many2one(
-    #     domain="[('team_ids', 'in', [team_ids, False]), "
-    #     "('lead_type', 'in', [type, 'both'])]"
-    # )
+    
+    stage_id = fields.Many2one(
+        'crm.stage', string='Stage', index=True, tracking=True,
+        compute='_compute_stage_id', readonly=False, store=True,
+        copy=False, group_expand='_read_group_stage_ids', ondelete='restrict',
+        domain=(
+        "["
+        "'&',"
+            "'|',"
+                "('lead_type', '=', type),"
+                "('lead_type', '=', 'both'),"
+            "'|',"
+                "('team_ids', '=', False),"
+                "('team_ids', 'in', team_id)"
+        "]")
+    )
 
     @api.model
     def _read_group_stage_ids(self, stages, domain):
