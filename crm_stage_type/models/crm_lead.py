@@ -19,22 +19,35 @@ class Lead(models.Model):
                 "('lead_type', '=', type),"
                 "('lead_type', '=', 'both'),"
             "'|',"
-                "('team_ids', '=', False),"
-                "('team_ids', 'in', team_id)"
-        "]")
+                "'|',"
+                    "('team_ids', '=', False),"
+                    "('team_ids', 'in', team_id),"
+                "('team_ids', '!=', False)"
+        "]"
+    ),
     )
 
     @api.model
     def _read_group_stage_ids(self, stages, domain):
         ctx_type = self.env.context.get("default_type")
-        stages = super(Lead, self)._read_group_stage_ids(stages, domain)
-        search_domain = [("id", "in", stages.ids)]
+        team_id = self.env.context.get('default_team_id')
+
+        search_domain = []
+
         if ctx_type:
-            search_domain += [("lead_type", "in", [ctx_type, "both"])]
-        stage_ids = stages._search(
-            search_domain
+            search_domain += [('lead_type', 'in', [ctx_type, 'both'])]
+
+        if team_id:
+            search_domain += ['|', ('team_ids', '=', False), ('team_ids', 'in', [team_id])]
+        else:
+            search_domain += ['|', ('team_ids', '=', False), ('team_ids', '!=', False)]
+
+        stage_ids = self.env['crm.stage'].sudo()._search(
+            search_domain,
+            order='sequence'
         )
-        return stages.browse(stage_ids)
+
+        return self.env['crm.stage'].browse(stage_ids)
 
     def _stage_find(self, team_ids=False, domain=None, order="sequence"):
         # check whether we should try to add a condition on type
