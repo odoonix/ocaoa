@@ -5,6 +5,21 @@ This module allows to run an Inventory report or Inventory Valuation
 report by location, for a past date or for current date.
 
 
+Usecase
+=======
+
+
+
+
+Installation
+============
+
+
+
+
+Configuration
+=============
+
 
 
 
@@ -41,6 +56,16 @@ Contributer
 - `Sodexis <https://www.sodexis.com>`__ <dev@sodexis.com>
 
   - Sakthivel <sakthivel@sodexis.com>
+
+
+Credits
+=======
+
+
+
+
+History
+=======
 
 
 

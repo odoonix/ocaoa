@@ -5,6 +5,21 @@ This module allows you to select a lot number on sale order line. This
 selected lot number will be the one delivered to the Customer.
 
 
+Usecase
+=======
+
+
+
+
+Installation
+============
+
+
+
+
+Configuration
+=============
+
 
 
 
@@ -30,6 +45,16 @@ Contributer
 - François Honoré <francois.honore@acsone.eu>
 - Florian da Costa <florian.dacosta@akretion.com>
 - Sander Lienaerts <sander.lienaerts@codeforward.nl>
+
+
+Credits
+=======
+
+
+
+
+History
+=======
 
 
 

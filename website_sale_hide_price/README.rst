@@ -4,6 +4,16 @@ Description
 This module allows to have hidden product prices on the website store.
 
 
+Usecase
+=======
+
+
+
+
+Installation
+============
+
+
 
 
 Configuration
@@ -81,6 +91,16 @@ Contributer
 - `Kencove <https://kencove.com>`__:
 
   - Mohamed Alkobrosli
+
+
+Credits
+=======
+
+
+
+
+History
+=======
 
 
 

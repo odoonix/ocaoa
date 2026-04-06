@@ -13,6 +13,21 @@ combination with OCA module 'record_archiver' in order to automatically
 archive old purchase orders.
 
 
+Usecase
+=======
+
+
+
+
+Installation
+============
+
+
+
+
+Configuration
+=============
+
 
 
 
@@ -46,6 +61,16 @@ Contributer
 - `Binhex <https://binhex.cloud/>`__:
 
   - Mario Luis <m.luis@binhex.cloud>
+
+
+Credits
+=======
+
+
+
+
+History
+=======
 
 
 

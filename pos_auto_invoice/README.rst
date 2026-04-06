@@ -4,6 +4,16 @@ Description
 Allow to set point-of-sale orders as to-invoice by default.
 
 
+Usecase
+=======
+
+
+
+
+Installation
+============
+
+
 
 
 Configuration
@@ -14,6 +24,11 @@ section of the Point of Sale settings.
 
 To set orders as to-invoice by default, check the “Invoice By Default”
 checkbox.
+
+
+Usage
+=====
+
 
 
 
@@ -35,5 +50,10 @@ Credits
 
 The migration of this module from 16.0 to 18.0 was financially supported
 by Camptocamp.
+
+
+History
+=======
+
 
 

@@ -10,6 +10,21 @@ https://github.com/ingadhoc/odoo-addons and before that on
 https://launchpad.net/~ingenieria-adhoc.
 
 
+Usecase
+=======
+
+
+
+
+Installation
+============
+
+
+
+
+Configuration
+=============
+
 
 
 

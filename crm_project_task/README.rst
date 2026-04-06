@@ -4,6 +4,16 @@ Description
 This module allow create task from leads/opportunities
 
 
+Usecase
+=======
+
+
+
+
+Installation
+============
+
+
 
 
 Configuration
@@ -38,6 +48,16 @@ Contributer
 - Emilio Pascual (`Moduon <https://www.moduon.team/>`__)
 - Rafael Blasco (`Moduon <https://www.moduon.team/>`__)
 - Andrii Kompaniiets (`Moduon <https://www.moduon.team/>`__)
+
+
+Credits
+=======
+
+
+
+
+History
+=======
 
 
 
