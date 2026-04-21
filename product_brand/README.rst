@@ -1,4 +1,3 @@
-
 Description
 ===========
 
@@ -55,34 +54,34 @@ To see the invoice report based on brand dimension:
 Contributer
 ===========
 
--  Mathieu Lemercier <mathieu@netandco.net>
--  Franck Bret <franck@netandco.net>
--  Seraphine Lantible <s.lantible@gmail.com>
--  Gunnar Wagner <vrms@netcologne.de>
--  Leonardo Donelli <donelli@webmonks.it>
--  Serpent Consulting Services Pvt. Ltd. <jay.vora@serpentcs.com>
--  Marcelo Pickler <loxamir@gmail.com>
--  Andrius Laukavičius <ala@boolit.eu> (Boolit)
--  Daniel Campos <danielcampos@avanzosc.es>
--  Samir Guesmi <samir.guesmi@acsone.eu>
--  `Tecnativa <https://www.tecnativa.com>`__
+- Mathieu Lemercier <mathieu@netandco.net>
+- Franck Bret <franck@netandco.net>
+- Seraphine Lantible <s.lantible@gmail.com>
+- Gunnar Wagner <vrms@netcologne.de>
+- Leonardo Donelli <donelli@webmonks.it>
+- Serpent Consulting Services Pvt. Ltd. <jay.vora@serpentcs.com>
+- Marcelo Pickler <loxamir@gmail.com>
+- Andrius Laukavičius <ala@boolit.eu> (Boolit)
+- Daniel Campos <danielcampos@avanzosc.es>
+- Samir Guesmi <samir.guesmi@acsone.eu>
+- `Tecnativa <https://www.tecnativa.com>`__
 
-   -  David Vidal
-   -  João Marques
+  - David Vidal
+  - João Marques
 
--  Kaushal Prajapati <kbprajapati@live.com>
--  `Jarsa <https://www.jarsa.com>`__
+- Kaushal Prajapati <kbprajapati@live.com>
+- `Jarsa <https://www.jarsa.com>`__
 
-   -  Alan Ramos
+  - Alan Ramos
 
--  `NuoBiT Solutions <https://www.nuobit.com>`__
+- `NuoBiT Solutions <https://www.nuobit.com>`__
 
-   -  Eric Antones <eantones@nuobit.com>
+  - Eric Antones <eantones@nuobit.com>
 
--  `Trobz <https://trobz.com>`__:
+- `Trobz <https://trobz.com>`__:
 
-   -  Thao Le <thaolt@trobz.com>
-   -  Do Anh Duy <duyda@trobz.com>
+  - Thao Le <thaolt@trobz.com>
+  - Do Anh Duy <duyda@trobz.com>
 
 
 Credits
@@ -94,12 +93,6 @@ The migration of this module from 16.0 to 17.0 and then from 17.0 to
 
 History
 =======
-
-
-
-
-Development
-===========
 
 
 

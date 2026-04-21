@@ -16,7 +16,7 @@
                                 ('team_ids', '=', False)
                     ]
                 </attribute>
-                <attribute name="invisible"/>
+                <attribute name="invisible" />
             </field>
         </field>
     </record>

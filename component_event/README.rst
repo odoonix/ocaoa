@@ -1,4 +1,3 @@
-
 Description
 ===========
 
@@ -65,15 +64,15 @@ And subscribe listeners to the events:
 
 This module triggers 3 events:
 
--  ``on_record_create(record, fields=None)``
--  ``on_record_write(record, fields=None)``
--  ``on_record_unlink(record)``
+- ``on_record_create(record, fields=None)``
+- ``on_record_write(record, fields=None)``
+- ``on_record_unlink(record)``
 
 
 Contributer
 ===========
 
--  Guewen Baconnier <guewen.baconnier@camptocamp.com>
+- Guewen Baconnier <guewen.baconnier@camptocamp.com>
 
 
 Credits
@@ -92,11 +91,5 @@ Next
 12.0.1.0.0 (2018-11-26)
 -----------------------
 
--  [MIGRATION] from 12.0 branched at rev. 324e006
-
-
-Development
-===========
-
-
+- [MIGRATION] from 12.0 branched at rev. 324e006
 

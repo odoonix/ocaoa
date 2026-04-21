@@ -12,8 +12,5 @@
     "application": False,
     "installable": True,
     "depends": ["crm"],
-    "data": [
-        "views/crm_lead_views.xml", 
-        "views/crm_stage_views.xml"
-    ],
+    "data": ["views/crm_lead_views.xml", "views/crm_stage_views.xml"],
 }

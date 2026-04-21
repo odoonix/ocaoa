@@ -1,4 +1,3 @@
-
 Description
 ===========
 
@@ -60,28 +59,22 @@ for more details.
 Contributer
 ===========
 
--  Souheil Bejaoui <souheil.bejaoui@acsone.eu>
--  `Obertix <https://www.obertix.net>`__:
+- Souheil Bejaoui <souheil.bejaoui@acsone.eu>
+- `Obertix <https://www.obertix.net>`__:
 
-   -  Vicent Cubells
+  - Vicent Cubells
 
--  Ammar Officewala <aofficewala@opensourceintegrators.com>
+- Ammar Officewala <aofficewala@opensourceintegrators.com>
 
 
 Credits
 =======
 
--  ACSONE SA/NV <https://www.acsone.eu>
+- ACSONE SA/NV <https://www.acsone.eu>
 
 
 History
 =======
-
-
-
-
-Development
-===========
 
 
 

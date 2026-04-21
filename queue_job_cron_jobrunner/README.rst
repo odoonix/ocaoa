@@ -1,4 +1,3 @@
-
 Description
 ===========
 
@@ -12,9 +11,9 @@ Unlike the regular job runner, where jobs are dispatched to the
 HttpWorkers, jobs are processed on the CronWorker threads by the job
 runner crons. This is a design decision because:
 
--  Odoo.sh puts HttpWorkers to sleep when there's no network activity
--  HttpWorkers are meant for traffic. Users shouldn't pay the price of
-   background tasks.
+- Odoo.sh puts HttpWorkers to sleep when there's no network activity
+- HttpWorkers are meant for traffic. Users shouldn't pay the price of
+  background tasks.
 
 For now, it only implements the most basic features of the ``queue_job``
 runner, notably no channel capacity nor priorities. Please check the
@@ -56,10 +55,10 @@ In Odoo.sh, this is done by default.
 Parallel execution of jobs can be achieved by leveraging multiple
 ``ir.cron`` records:
 
--  Make sure you have enough CronWorkers available (Odoo CLI
-   ``--max-cron-threads``)
--  Duplicate the ``queue_job_cron`` cron record as many times as needed,
-   until you have as much records as cron workers.
+- Make sure you have enough CronWorkers available (Odoo CLI
+  ``--max-cron-threads``)
+- Duplicate the ``queue_job_cron`` cron record as many times as needed,
+  until you have as much records as cron workers.
 
 
 Usage
@@ -71,9 +70,9 @@ Usage
 Contributer
 ===========
 
--  `Camptocamp <https://www.camptocamp.com>`__
+- `Camptocamp <https://www.camptocamp.com>`__
 
-      -  Iván Todorovich <ivan.todorovich@camptocamp.com>
+     - Iván Todorovich <ivan.todorovich@camptocamp.com>
 
 
 Credits
@@ -84,12 +83,6 @@ Credits
 
 History
 =======
-
-
-
-
-Development
-===========
 
 
 
