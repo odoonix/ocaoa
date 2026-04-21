@@ -58,8 +58,7 @@ class Lead(models.Model):
 
         return self.env["crm.stage"].browse(stage_ids)
 
-    def _stage_find(self, team_ids=False, domain=None, order="sequence"):
-        # check whether we should try to add a condition on type
+    def _stage_find(self, team_id=False, domain=None, order="sequence"):
         domain = domain or []
         if not any(
             [term for term in domain if len(term) == 3 and term[0] == "lead_type"]
@@ -69,7 +68,7 @@ class Lead(models.Model):
             if ctx_type:
                 types += [ctx_type]
             domain.append(("lead_type", "in", types))
-        return super()._stage_find(team_ids, domain, order)
+        return super()._stage_find(team_id=team_id, domain=domain, order=order)
 
     def merge_opportunity(self, user_id=False, team_ids=False):
         opportunities_head = super().merge_opportunity(user_id, team_ids)
@@ -87,11 +86,11 @@ class Lead(models.Model):
                 )
         return opportunities_head
 
-    def _convert_opportunity_data(self, customer, team_ids=False):
-        value = super(Lead, self)._convert_opportunity_data(customer, team_ids)
-        if (not self.stage_id or self.stage_id.lead_type == "lead") and team_ids:
+    def _convert_opportunity_data(self, customer, team_id=False):
+        value = super(Lead, self)._convert_opportunity_data(customer, team_id)
+        if (not self.stage_id or self.stage_id.lead_type == "lead") and team_id:
             stage = self._stage_find(
-                team_ids=team_ids, domain=[("lead_type", "in", ["opportunity", "both"])]
+                team_id=team_id, domain=[("lead_type", "in", ["opportunity", "both"])]
             )
             value["stage_id"] = stage.id
         return value
