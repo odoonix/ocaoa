@@ -75,7 +75,7 @@ class Lead(models.Model):
         if opportunities_head.team_ids:
             team_stage_ids = self.env["crm.stage"].search(
                 [
-                    ("team_ids", "in", [opportunities_head.team_ids.id, False]),
+                    ("team_ids", "in", [opportunities_head.team_ids.ids, False]),
                     ("lead_type", "in", [opportunities_head.type, "both"]),
                 ],
                 order="sequence",
@@ -88,7 +88,7 @@ class Lead(models.Model):
 
     def _convert_opportunity_data(self, customer, team_ids=False):
         value = super(Lead, self)._convert_opportunity_data(customer, team_ids)
-        if not self.stage_id or self.stage_id.lead_type == "lead":
+        if (not self.stage_id or self.stage_id.lead_type == "lead") and team_ids:
             stage = self._stage_find(
                 team_ids=team_ids, domain=[("lead_type", "in", ["opportunity", "both"])]
             )
