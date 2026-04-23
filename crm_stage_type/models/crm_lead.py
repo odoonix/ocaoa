@@ -88,7 +88,7 @@ class Lead(models.Model):
 
     def _convert_opportunity_data(self, customer, team_id=False):
         value = super(Lead, self)._convert_opportunity_data(customer, team_id)
-        if (not self.stage_id or self.stage_id.lead_type == "lead") and team_id:
+        if (not self.stage_id or self.stage_id.lead_type == "lead"):
             stage = self._stage_find(
                 team_id=team_id, domain=[("lead_type", "in", ["opportunity", "both"])]
             )
