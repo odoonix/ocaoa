@@ -70,12 +70,12 @@ class Lead(models.Model):
             domain.append(("lead_type", "in", types))
         return super()._stage_find(team_id=team_id, domain=domain, order=order)
 
-    def merge_opportunity(self, user_id=False, team_ids=False):
-        opportunities_head = super().merge_opportunity(user_id, team_ids)
-        if opportunities_head.team_ids:
+    def merge_opportunity(self, user_id=False, team_id=False,auto_unlink=True):
+        opportunities_head = super().merge_opportunity(user_id, team_id,auto_unlink=auto_unlink)
+        if opportunities_head.team_id:
             team_stage_ids = self.env["crm.stage"].search(
                 [
-                    ("team_ids", "in", [opportunities_head.team_ids.ids, False]),
+                    ("team_ids", "in", opportunities_head.team_id.ids),
                     ("lead_type", "in", [opportunities_head.type, "both"]),
                 ],
                 order="sequence",
