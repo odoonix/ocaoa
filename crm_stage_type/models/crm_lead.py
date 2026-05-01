@@ -71,7 +71,10 @@ class Lead(models.Model):
         return super()._stage_find(team_id=team_id, domain=domain, order=order)
 
     def merge_opportunity(self, user_id=False, team_id=False,auto_unlink=True):
-        opportunities_head = super().merge_opportunity(user_id, team_id,auto_unlink=auto_unlink)
+        opportunities_head = super().merge_opportunity(
+            user_id, team_id,
+            auto_unlink=auto_unlink,
+        )
         if opportunities_head.team_id:
             team_stage_ids = self.env["crm.stage"].search(
                 [
