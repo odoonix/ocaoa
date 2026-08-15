@@ -10,7 +10,7 @@ class SaleOrderLine(models.Model):
 
     bom_id = fields.Many2one(
         comodel_name="mrp.bom",
-        string="BoM",
+        string="Item",
         domain="[('product_tmpl_id.product_variant_ids', '=', product_id),"
         "'|', ('product_id', '=', product_id), "
         "('product_id', '=', False)]",
