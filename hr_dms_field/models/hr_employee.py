@@ -5,5 +5,5 @@ from odoo import models
 
 
 class HrEmployeeBase(models.AbstractModel):
-    _name = "hr.employee.base"
-    _inherit = ["hr.employee.base", "dms.field.mixin"]
+    _name = "hr.employee"
+    _inherit = ["hr.employee", "dms.field.mixin"]
