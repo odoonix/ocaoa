@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <data>
+    <!-- <data>
         <record id="group_hr_public_dms" model="res.groups">
             <field name="name">DMS Is accessible publicly on employee profile</field>
             <field name="privilege_id" ref="base.privilege_hidden" />
@@ -13,5 +13,5 @@
                 eval="[(4, ref('hr_dms_field.group_hr_public_dms'))]"
             />
         </record>
-    </data>
+    </data> -->
 </odoo>
