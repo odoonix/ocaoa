@@ -58,7 +58,7 @@ class Lead(models.Model):
 
         return self.env["crm.stage"].browse(stage_ids)
 
-    def _stage_find(self, team_id=False, domain=None, order="sequence"):
+    def _stage_find(self, team_id=False, domain=None, order="sequence",limit=1):
         domain = domain or []
         if not any(
             [term for term in domain if len(term) == 3 and term[0] == "lead_type"]
@@ -68,7 +68,7 @@ class Lead(models.Model):
             if ctx_type:
                 types += [ctx_type]
             domain.append(("lead_type", "in", types))
-        return super()._stage_find(team_id=team_id, domain=domain, order=order)
+        return super()._stage_find(team_id=team_id, domain=domain, order=order, limit=limit)
 
     def merge_opportunity(self, user_id=False, team_id=False,auto_unlink=True):
         opportunities_head = super().merge_opportunity(
