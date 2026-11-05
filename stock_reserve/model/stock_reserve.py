@@ -191,16 +191,18 @@ class StockReservation(models.Model):
 
     def write(self, vals):
         res = super().write(vals)
-        rounding = self.product_uom.rounding
-        if (
-            "product_uom_qty" in vals
-            and self.state in ["confirmed", "waiting", "partially_available"]
-            and float_compare(
-                self.product_id.virtual_available, 0, precision_rounding=rounding
-            )
-            >= 0
-        ):
-            self.reserve()
+        if "product_uom_qty" not in vals:
+            return res
+        for rec in self:
+            rounding = rec.product_uom.rounding
+            if (
+                rec.state in ["confirmed", "waiting", "partially_available"]
+                and float_compare(
+                    rec.product_id.virtual_available, 0, precision_rounding=rounding
+                )
+                >= 0
+            ):
+                rec.reserve()
         return res
 
     def _get_reservations_to_assign_domain(self):
