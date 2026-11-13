@@ -2,3 +2,5 @@
 cachetools
 requests
 openupgradelib
+shapely
+geojson
