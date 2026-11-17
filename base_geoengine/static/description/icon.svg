@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 64 64"
+     width="64" height="64">
+
+    <defs>
+        <linearGradient id="pinGlass"
+                        x1="0" y1="0"
+                        x2="1" y2="1">
+            <stop offset="0%"
+                    stop-color="#BDA6D2"
+                    stop-opacity="0.95"/>
+            <stop offset="100%"
+                    stop-color="#714B67"
+                    stop-opacity="0.9"/>
+        </linearGradient>
+    </defs>
+
+    <!-- Map - Bottom Layer -->
+    <path d="M5 34 L19 29 L19 53 L5 58 Z"
+          fill="#00A09D"/>
+
+    <path d="M19 29 L39 35 L39 59 L19 53 Z"
+          fill="#F9A825"/>
+
+    <path d="M39 35 L59 29 L59 53 L39 59 Z"
+          fill="#875A7B"/>
+
+    <!-- Location Pin - Front Layer -->
+    <path d="M32 5
+             C23 5 17 12 17 22
+             C17 34 32 51 32 51
+             C32 51 47 34 47 22
+             C47 12 41 5 32 5 Z"
+          fill="url(#pinGlass)"/>
+
+    <!-- Glass Highlight -->
+    <path d="M23 15
+             C25 11 29 10 33 10"
+          fill="none"
+          stroke="#FFFFFF"
+          stroke-width="2"
+          stroke-linecap="round"
+          opacity="0.55"/>
+
+    <!-- Pin Center -->
+    <circle cx="32" cy="22"
+            r="6"
+            fill="#FFFFFF"
+            fill-opacity="0.9"/>
+
+</svg>

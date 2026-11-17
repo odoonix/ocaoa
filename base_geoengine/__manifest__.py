@@ -10,6 +10,10 @@
     "license": "AGPL-3",
     "website": "https://github.com/OCA/geospatial",
     "depends": ["base", "web"],
+    'images': [
+        'static/description/banner.png',
+        'static/description/icon.svg',
+    ],
     "data": [
         "security/data.xml",
         "views/base_geoengine_view.xml",

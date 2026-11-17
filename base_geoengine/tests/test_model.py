@@ -5,9 +5,28 @@ from shapely import wkt
 from shapely.geometry import shape
 
 from odoo.orm.model_classes import add_to_registry
+from odoo.service.model import call_kw
 from odoo.tests.common import TransactionCase
 
 from ..fields import GeoPoint
+
+
+class TestGeoengineFieldName(TransactionCase):
+    def test_set_field_real_name_from_rpc(self):
+        field = self.env["ir.model.fields"].search(
+            [("model", "=", "res.partner"), ("name", "=", "name")], limit=1
+        )
+        self.assertTrue(field)
+        model = self.env["res.partner"]
+        for value in (
+            [field.id, "Partner Name"],
+            {"id": field.id, "display_name": "Partner Name"},
+        ):
+            self.assertEqual(
+                call_kw(model, "set_field_real_name", [value], {}),
+                (field.id, "name", "Partner Name"),
+            )
+        self.assertFalse(call_kw(model, "set_field_real_name", [False], {}))
 
 
 class TestModel(TransactionCase):

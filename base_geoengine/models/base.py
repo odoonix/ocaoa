@@ -67,8 +67,13 @@ class Base(models.AbstractModel):
         field_obj = self.env["ir.model.fields"]
         if not in_tuple:
             return in_tuple
-        name = field_obj.browse(in_tuple[0]).name
-        out = (in_tuple[0], name, in_tuple[1])
+        if isinstance(in_tuple, dict):
+            field_id = in_tuple["id"]
+            display_name = in_tuple["display_name"]
+        else:
+            field_id, display_name = in_tuple[:2]
+        name = field_obj.browse(field_id).name
+        out = (field_id, name, display_name)
         return out
 
     @api.model
