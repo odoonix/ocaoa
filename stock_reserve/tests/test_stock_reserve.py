@@ -75,3 +75,20 @@ class TestStockReserve(BaseCommon):
         self.env["stock.reservation"].assign_waiting_confirmed_reserve_moves()
         self.assertEqual(reservation_1.state, "assigned")
         self.assertEqual(self.product.virtual_available, 9)
+
+    def test_default_picking_type_multi_company(self):
+        company_2 = self.env["res.company"].create({"name": "Company 2"})
+        warehouse_2 = self.env["stock.warehouse"].search(
+            [("company_id", "=", company_2.id)], limit=1
+        )
+        reservation = self.env["stock.reservation"].with_company(company_2)
+        picking_type = self.env["stock.picking.type"].browse(
+            reservation._default_picking_type_id()
+        )
+        self.assertEqual(picking_type.warehouse_id, warehouse_2)
+        picking_type = self.env["stock.picking.type"].browse(
+            reservation.with_context(
+                warehouse_id=self.warehouse.id
+            )._default_picking_type_id()
+        )
+        self.assertEqual(picking_type.warehouse_id, self.warehouse)

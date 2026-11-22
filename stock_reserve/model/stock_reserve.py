@@ -108,8 +108,15 @@ class StockReservation(models.Model):
 
     @api.model
     def _default_picking_type_id(self):
-        ref = "stock.picking_type_out"
-        return self.env.ref(ref, raise_if_not_found=False).id
+        # "stock.picking_type_out" belongs to the first company's warehouse,
+        # so look up the delivery type of the right warehouse/company instead.
+        domain = [("code", "=", "outgoing")]
+        warehouse_id = self.env.context.get("warehouse_id")
+        if warehouse_id:
+            domain.append(("warehouse_id", "=", warehouse_id))
+        else:
+            domain.append(("company_id", "=", self.env.company.id))
+        return self.env["stock.picking.type"].search(domain, limit=1).id
 
     @api.model
     def _default_location_dest_id(self):
