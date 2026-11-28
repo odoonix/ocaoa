@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <record id="carrier_form_tipax" model="ir.ui.view">
+        <field name="name">delivery.carrier.tipax</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='destination']" position="before">
+                <page name="tipax_configuration" string="Tipax Configuration" invisible="delivery_type != 'tipax'">
+                    <group>
+                        <field name="tipax_api_key" password="True" groups="base.group_system"/>
+                        <field name="tipax_origin_id"/>
+                        <field name="tipax_city_id"/>
+                        <field name="tipax_service_id"/>
+                        <field name="tipax_payment_type"/>
+                        <field name="tipax_packing_id"/>
+                        <field name="tipax_pack_type"/>
+                        <field name="tipax_content_id"/>
+                        <field name="tipax_currency_id"/>
+                        <field name="tipax_amount_factor"/>
+                        <field name="tipax_success_callback"/>
+                        <field name="tipax_failure_callback"/>
+                    </group>
+                    <button name="action_tipax_test" type="object" string="Test Connection" groups="base.group_system"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="picking_form_tipax" model="ir.ui.view">
+        <field name="name">stock.picking.tipax</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="tipax" string="Tipax" invisible="not tipax_is_carrier">
+                    <field name="tipax_is_carrier" invisible="1"/>
+                    <field name="tipax_service" readonly="tipax_state != 'draft'" invisible="1"/>
+                    <field name="tipax_pack" readonly="tipax_state != 'draft'" invisible="1"/>
+                    <field name="tipax_content" readonly="tipax_state != 'draft'" invisible="1"/>
+                    <field name="tipax_barcode" readonly="tipax_state != 'draft'" invisible="1"/>
+                    <field name="tipax_previous_id" readonly="tipax_state != 'draft'" invisible="1"/>
+                    <field name="tipax_state" invisible="1"/>
+                    <field name="tipax_confirmed" invisible="1"/>
+                    <field name="tipax_trace" invisible="1"/>
+                    <field name="tipax_status_id" invisible="1"/>
+                    <field name="tipax_order_id" invisible="1"/>
+                    <field name="tipax_correlation" invisible="1"/>
+                    <field name="tipax_company_price" invisible="1"/>
+                    <field name="tipax_last_sync" invisible="1"/>
+                    <field name="tipax_last_error" invisible="1"/>
+                    <field name="tipax_history" invisible="1"/>
+                    <group>
+                        <group string="Shipment Details">
+                            <field name="tipax_direction" readonly="tipax_state != 'draft'" string="Shipment Direction"/>
+                            <field name="tipax_address_id" readonly="tipax_state != 'draft'" string="Customer Address"/>
+                            <field name="tipax_customer_city" readonly="tipax_state != 'draft'" string="Customer City ID"/>
+                            <field name="tipax_payment" readonly="tipax_state != 'draft'" string="Payment Type (Code)"/>
+                            <field name="tipax_packing" readonly="tipax_state != 'draft'" string="Packaging Type (Code)"/>
+                            <field name="tipax_value" readonly="tipax_state != 'draft'" string="Declared Value (API units)"/>
+                        </group>
+                        <group string="Package Details">
+                            <field name="tipax_weight" readonly="tipax_state != 'draft'" string="Weight (kg)"/>
+                            <field name="tipax_length" readonly="tipax_state != 'draft'" string="Length (cm)"/>
+                            <field name="tipax_width" readonly="tipax_state != 'draft'" string="Width (cm)"/>
+                            <field name="tipax_height" readonly="tipax_state != 'draft'" string="Height (cm)"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Tracking">
+                            <field name="tipax_state_label" string="Registration Status" widget="char" readonly="1"/>
+                            <field name="tipax_status" string="Shipment Status"/>
+                            <field name="carrier_tracking_ref" string="Tracking Code" readonly="1"/>
+                            <field name="tipax_handover" string="Handover Date"/>
+                            <field name="tipax_handover_user" string="Handed Over By"/>
+                        </group>
+                        <group string="Shipping Costs (API units)">
+                            <field name="tipax_estimate" string="Estimated Cost"/>
+                            <field name="tipax_final" string="Final Cost"/>
+                        </group>
+                    </group>
+                    <button name="action_tipax_price" type="object" string="Get Tipax Price" invisible="tipax_state != 'draft' or state == 'cancel'"/>
+                    <button name="action_tipax_register" type="object" string="Register Tipax Shipment" invisible="tipax_state != 'draft' or state == 'cancel' or carrier_tracking_ref" confirm="Register this parcel in Tipax sandbox?"/>
+                    <button name="action_tipax_track" type="object" string="Refresh Tracking" invisible="not carrier_tracking_ref"/>
+                    <button name="action_tipax_cancel" type="object" string="Request Cancellation" invisible="not tipax_confirmed or tipax_handover or tipax_status_id != 30" confirm="Request cancellation in Tipax?"/>
+                    <button name="action_tipax_handover" type="object" string="Record Handover" invisible="not tipax_confirmed or tipax_handover or tipax_status_id in [34, 50, 51, 52]"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="tipax_handover_action" model="ir.actions.server">
+        <field name="name">Tipax: Record Handover</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_tipax_handover()</field>
+    </record>
+    <record id="tipax_cost_list" model="ir.ui.view">
+        <field name="name">tipax.cost.list</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="carrier_tracking_ref"/>
+                <field name="tipax_status"/>
+                <field name="tipax_estimate"/>
+                <field name="tipax_final"/>
+                <field name="tipax_company_price"/>
+            </list>
+        </field>
+    </record>
+    <record id="tipax_cost_action" model="ir.actions.act_window">
+        <field name="name">Tipax Costs</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="tipax_cost_list"/>
+        <field name="domain">[('carrier_id.delivery_type','=','tipax')]</field>
+    </record>
+    <menuitem id="tipax_cost_menu" name="Tipax Costs" parent="stock.menu_stock_root" action="tipax_cost_action" groups="stock.group_stock_user"/>
+</odoo>
